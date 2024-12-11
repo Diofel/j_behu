@@ -1,41 +1,13 @@
+import static game_assets.GameConstants.*;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Random;
 import java.util.Scanner;
 
-public class behu {
-    // Unicode constants for game symbols
-    private static final String ROCK = "\u270A"; // ✊
-    private static final String PAPER = "\u270B"; // ✋
-    private static final String SCISSORS = "\u270C"; // ✌
-    private static final String STAR = "\u2B50"; // ⭐
-    private static final String HEART = "\u2764"; // ❤
-    private static final String BROKEN_HEART = "\uD83D\uDC94"; // 💔
-    private static final String PARTY = "\uD83C\uDF89"; // 🎉
-    private static final String HANDSHAKE = "\uD83E\uDD1D"; // 🤝
-    private static final String SAD = "\uD83D\uDE14"; // 😔
-    private static final String FIRE = "\uD83D\uDD25"; // 🔥
-    private static final String WARNING = "\u26A0"; // ⚠
-
-    private static final String[] hand = { ROCK, PAPER, SCISSORS };
-    private static final String[] player = {
-            "\uD83D\uDC68", // 👨
-            "\uD83D\uDC69", // 👩
-            "\uD83D\uDC74", // 👴
-            "\uD83D\uDC75" // 👵
-    };
-    private static final String[] enemy = {
-            "\uD83D\uDC79", // 👹
-            "\uD83D\uDC7B", // 👻
-            "\uD83D\uDC0D", // 🐍
-            "\uD83D\uDC7E" // 👾
-    };
-
-    private static final Random random = new Random();
-    private static int playerLives;
-    private static int enemyLives;
-    private static int consecutiveWins;
-    private static boolean randomCards;
+class Game {
+    private  int playerLives;
+    private  int enemyLives;
+    private  int consecutiveWins;
+    private  boolean randomCards;
 
     static {
         try {
@@ -45,35 +17,7 @@ public class behu {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            // Force console to use UTF-8
-            new ProcessBuilder("cmd", "/c", "chcp", "65001").inheritIO().start().waitFor();
-        } catch (Exception e) {
-            System.err.println("Warning: Console encoding could not be set to UTF-8");
-        }
-
-        Scanner scanner = new Scanner(System.in, "UTF-8");
-        boolean playAgain;
-
-        do {
-            clearScreen(); // Clear at start of new game
-            initializeGame();
-            String chosenPlayer = selectCharacter(scanner, "PLAYER", player);
-            String chosenEnemy = selectCharacter(scanner, "ENEMY", enemy);
-
-            displayVersusScreen(chosenPlayer, chosenEnemy);
-            playGame(scanner, chosenPlayer, chosenEnemy);
-            displayGameResult(chosenPlayer, chosenEnemy);
-
-            playAgain = askPlayAgain(scanner);
-        } while (playAgain);
-
-        System.out.println("Thanks for playing! Goodbye!");
-        scanner.close();
-    }
-
-    private static void initializeGame() {
+    public  void initializeGame() {
         playerLives = 10;
         enemyLives = 10;
         consecutiveWins = 0;
@@ -84,7 +28,7 @@ public class behu {
         System.out.println("╚════════════════════════════════════╝\n");
     }
 
-    private static String selectCharacter(Scanner scanner, String type, String[] options) {
+    public  String selectCharacter(Scanner scanner, String type, String[] options) {
         System.out.println("=====================================");
         System.out.println("-----  " + type + "  -----");
         displayOptions(options);
@@ -94,21 +38,21 @@ public class behu {
         return options[choice - 1];
     }
 
-    private static void displayOptions(String[] options) {
+    public  void displayOptions(String[] options) {
         for (int i = 0; i < options.length; i++) {
             System.out.println((i + 1) + ": " + options[i]);
         }
         System.out.println("=====================================");
     }
 
-    private static void displayVersusScreen(String player, String enemy) {
+    public  void displayVersusScreen(String player, String enemy) {
         System.out.println("\n=====================================");
         System.out.println(player + "   V.S.   " + enemy);
         System.out.println("=====================================\n");
         displayLives(player, enemy);
     }
 
-    private static void playGame(Scanner scanner, String chosenPlayer, String chosenEnemy) {
+    public  void playGame(Scanner scanner, String chosenPlayer, String chosenEnemy) {
         while (playerLives > 0 && enemyLives > 0) {
             displayCardOptions();
             String playerHand = getPlayerHand(scanner);
@@ -120,7 +64,7 @@ public class behu {
         }
     }
 
-    private static void displayCardOptions() {
+    public  void displayCardOptions() {
         if (randomCards) {
             System.out.println("Cards are now random! Pick wisely.");
             System.out.println("[ 1 ]  [ 2 ]  [ 3 ]");
@@ -129,7 +73,7 @@ public class behu {
         }
     }
 
-    private static String getPlayerHand(Scanner scanner) {
+    public  String getPlayerHand(Scanner scanner) {
         System.out.print("Choose your card: ");
         int choice = getValidInput(scanner, 3);
 
@@ -140,13 +84,13 @@ public class behu {
         return hand[choice - 1];
     }
 
-    private static void displayRoundResult(String player, String playerHand, String enemy, String enemyHand) {
+    public  void displayRoundResult(String player, String playerHand, String enemy, String enemyHand) {
         System.out.println("\n=====================================");
         System.out.println(player + "  played: " + playerHand + "   |   " + enemy + "  played: " + enemyHand);
         System.out.println("─────────────────────────────────────");
     }
 
-    private static String determineWinner(String playerHand, String enemyHand) {
+    public  String determineWinner(String playerHand, String enemyHand) {
         if (playerHand.equals(enemyHand))
             return "tie";
         if ((playerHand.equals(SCISSORS) && enemyHand.equals(PAPER)) ||
@@ -157,7 +101,7 @@ public class behu {
         return "lose";
     }
 
-    private static void updateGameState(String result, String player, String playerHand, String enemy,
+    public  void updateGameState(String result, String player, String playerHand, String enemy,
             String enemyHand) {
         switch (result) {
             case "win":
@@ -186,14 +130,14 @@ public class behu {
         System.out.println("=====================================\n");
     }
 
-    private static void displayLives(String player, String enemy) {
+    public  void displayLives(String player, String enemy) {
         System.out.println("-------------------------------------");
         System.out.println(player + "  lives: " + (playerLives > 0 ? HEART + " " + playerLives : BROKEN_HEART + " 0"));
         System.out.println(enemy + "  lives: " + (enemyLives > 0 ? HEART + " " + enemyLives : BROKEN_HEART + " 0"));
         System.out.println("-------------------------------------");
     }
 
-    private static void displayGameResult(String player, String enemy) {
+    public  void displayGameResult(String player, String enemy) {
         System.out.println("\n=====================================");
         if (playerLives == 0) {
             System.out.println(player + "  has been defeated by  " + enemy + ".");
@@ -207,7 +151,7 @@ public class behu {
         System.out.println("=====================================\n");
     }
 
-    private static boolean askPlayAgain(Scanner scanner) {
+    public  boolean askPlayAgain(Scanner scanner) {
         System.out.println("-------------------------------------");
         System.out.print("Do you want to play again? (yes/no): ");
         boolean playAgain = scanner.next().equalsIgnoreCase("yes");
@@ -216,7 +160,7 @@ public class behu {
         return playAgain;
     }
 
-    private static int getValidInput(Scanner scanner, int maxOption) {
+    public  int getValidInput(Scanner scanner, int maxOption) {
         while (true) {
             String input = scanner.nextLine().trim();
 
@@ -240,7 +184,7 @@ public class behu {
         }
     }
 
-    private static void clearScreen() {
+    public  void clearScreen() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
 
@@ -258,7 +202,7 @@ public class behu {
         }
     }
 
-    private static void delay(int ms) { // milliseconds
+    public  void delay(int ms) { // milliseconds
         try {
             Thread.sleep(ms);
         } catch (InterruptedException e) {
@@ -266,7 +210,7 @@ public class behu {
         }
     }
 
-    private static void animation(String winner, String player, String playerHand, String enemy, String enemyHand) {
+    public  void animation(String winner, String player, String playerHand, String enemy, String enemyHand) {
         if (winner.equals("player")) {
             // show guess first
             System.out.println(player + playerHand + "     " + enemyHand + enemy);
@@ -344,4 +288,48 @@ public class behu {
             clearScreen();
         }
     }
+}
+
+class Player {
+
+}
+
+class Enemy {
+    
+}
+
+public class behu {
+    
+    
+
+    public static void main(String[] args) {
+        Game g = new Game();
+        try {
+            // Force console to use UTF-8
+            new ProcessBuilder("cmd", "/c", "chcp", "65001").inheritIO().start().waitFor();
+        } catch (Exception e) {
+            System.err.println("Warning: Console encoding could not be set to UTF-8");
+        }
+
+        Scanner scanner = new Scanner(System.in, "UTF-8");
+        boolean playAgain;
+
+        do {
+            g.clearScreen(); // Clear at start of new game
+            g.initializeGame();
+            String chosenPlayer = g.selectCharacter(scanner, "PLAYER", player);
+            String chosenEnemy = g.selectCharacter(scanner, "ENEMY", enemy);
+
+            g.displayVersusScreen(chosenPlayer, chosenEnemy);
+            g.playGame(scanner, chosenPlayer, chosenEnemy);
+            g.displayGameResult(chosenPlayer, chosenEnemy);
+
+            playAgain = g.askPlayAgain(scanner);
+        } while (playAgain);
+
+        System.out.println("Thanks for playing! Goodbye!");
+        scanner.close();
+    }
+
+    
 }
