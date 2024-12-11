@@ -16,13 +16,13 @@ public class GameConstants {
     public static final String WARNING = "\u26A0"; // ⚠
 
     public static final String[] hand = { ROCK, PAPER, SCISSORS };
-    public static final String[] player = {
+    public static final String[] PLAYER = {
             "\uD83D\uDC68", // 👨
             "\uD83D\uDC69", // 👩
             "\uD83D\uDC74", // 👴
             "\uD83D\uDC75" // 👵
     };
-    public static final String[] enemy = {
+    public static final String[] ENEMY = {
             "\uD83D\uDC79", // 👹
             "\uD83D\uDC7B", // 👻
             "\uD83D\uDC0D", // 🐍

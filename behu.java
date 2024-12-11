@@ -290,18 +290,35 @@ class Game {
     }
 }
 
-class Player {
+// For ABSTRACTION and INHERITANCE
+abstract class Character {
+    private int lives = 10;
+    private String type;
+    private String[] options;
+
+
+    // For CONSTRUCTION
+    public void Character(String type, String[] options) {
+        this.type = type;
+        this.options = options;
+    }
+
+    // For Encapsulation
+    public void getLives() {
+
+    }
+}
+
+// For POLYMORPHISM
+class Player extends Character {
 
 }
 
-class Enemy {
-    
+class Enemy extends Character {
+
 }
 
 public class behu {
-    
-    
-
     public static void main(String[] args) {
         Game g = new Game();
         try {
@@ -317,8 +334,8 @@ public class behu {
         do {
             g.clearScreen(); // Clear at start of new game
             g.initializeGame();
-            String chosenPlayer = g.selectCharacter(scanner, "PLAYER", player);
-            String chosenEnemy = g.selectCharacter(scanner, "ENEMY", enemy);
+            String chosenPlayer = g.selectCharacter(scanner, "PLAYER", PLAYER);
+            String chosenEnemy = g.selectCharacter(scanner, "ENEMY", ENEMY);
 
             g.displayVersusScreen(chosenPlayer, chosenEnemy);
             g.playGame(scanner, chosenPlayer, chosenEnemy);
