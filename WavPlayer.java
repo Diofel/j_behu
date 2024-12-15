@@ -22,7 +22,7 @@ public class WavPlayer {
 
 //lobby music kakegurui op1 instrumental
     public static void lobbyMusic() {
-        playAudio("game_assets/sfx/intro1.wav"); // Play the intro1.wav file from the game_assets folder
+        playAudio("game_assets/sfx/intro.wav"); // Play the intro1.wav file from the game_assets folder
     }
 
     //add more music if needed
