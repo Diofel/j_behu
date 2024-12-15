@@ -22,10 +22,10 @@ class Game { // Used hierarchical inheritance
         consecutiveWins = 0;
         randomCards = false;
 
-        // Title
-        System.out.println("╔════════════════════════════════════╗");
-        System.out.println("       " + STAR + "  HANDS OF FATE  " + STAR);
-        System.out.println("╚════════════════════════════════════╝\n");
+        // Title and background music
+        WavPlayer.lobbyMusic();
+        System.out.println(mainmenu());
+    
     }
 
     // Selects the Character
@@ -55,6 +55,7 @@ class Game { // Used hierarchical inheritance
 
     // Play game method.
     public void playGame(Scanner scanner, String chosenPlayer, String chosenEnemy) {
+        WavPlayer.stopMusic();
         while (p.playerLives > 0 && e.enemyLives > 0) {
             displayCardOptions();
             String playerHand = getPlayerHand(scanner);
