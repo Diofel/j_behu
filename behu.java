@@ -30,6 +30,7 @@ class Game { // Used hierarchical inheritance
 
     // Selects the Character
     public String selectCharacter(Scanner scanner, String type, String[] options) {
+        WavPlayer.playClick(); // Play click sound when entering character selection
         System.out.println("=====================================");
         System.out.println("-----  " + type + "  -----");
 
@@ -42,11 +43,13 @@ class Game { // Used hierarchical inheritance
         // Player Input for Character
         System.out.print("Choose your " + type.toLowerCase() + ": ");
         int choice = getValidInput(scanner, options.length);
+        WavPlayer.playCharacterSelect(); // Play character select sound when character is chosen
         return options[choice - 1];
     }
 
     // Prints the versus screen.
     public void displayVersusScreen(String player, String enemy) {
+        WavPlayer.playVersus(); // Play versus sound when showing versus screen
         System.out.println("\n=====================================");
         System.out.println(player + "   V.S.   " + enemy);
         System.out.println("=====================================\n");
@@ -55,12 +58,13 @@ class Game { // Used hierarchical inheritance
 
     // Play game method.
     public void playGame(Scanner scanner, String chosenPlayer, String chosenEnemy) {
-        WavPlayer.stopMusic();
+        WavPlayer.stopMusic(); // stops background music
+        /* WavPlayer.<name of song>(); to play a song again 
+        make sure it is in the game_assets folder and is called on wavplayer.java*/
         while (p.playerLives > 0 && e.enemyLives > 0) {
             displayCardOptions();
             String playerHand = getPlayerHand(scanner);
             String enemyHand = hand[random.nextInt(hand.length)];
-
             displayRoundResult(chosenPlayer, playerHand, chosenEnemy, enemyHand);
             updateGameState(determineWinner(playerHand, enemyHand), chosenPlayer, playerHand, chosenEnemy, enemyHand);
             displayLives(chosenPlayer, chosenEnemy);
@@ -84,6 +88,18 @@ class Game { // Used hierarchical inheritance
         if (randomCards) {
             randomCards = false;
             return hand[random.nextInt(hand.length)];
+        }
+        // Play appropriate sound based on choice
+        switch(hand[choice - 1]) {
+            case ROCK:
+                WavPlayer.playRock();
+                break;
+            case PAPER:
+                WavPlayer.playPaper();
+                break;
+            case SCISSORS:
+                WavPlayer.playScissors();
+                break;
         }
         return hand[choice - 1];
     }
@@ -110,6 +126,7 @@ class Game { // Used hierarchical inheritance
         switch (result) {
             case "win":
                 clearScreen();
+                WavPlayer.playWinRound(); // Play win round sound
                 animation("player", player, playerHand, enemy, enemyHand);
                 System.out.println(PARTY + "  You WON this round!");
                 e.drainlife();
@@ -121,6 +138,7 @@ class Game { // Used hierarchical inheritance
                 break;
             case "lose":
                 clearScreen();
+                WavPlayer.playLoseRound(); // Play lose round sound
                 animation("enemy", player, playerHand, enemy, enemyHand);
                 System.out.println(SAD + "  You LOST this round!");
                 p.drainlife();
@@ -128,6 +146,7 @@ class Game { // Used hierarchical inheritance
                 break;
             default:
                 clearScreen();
+                WavPlayer.playTie(); // Play tie sound
                 animation("tie", player, playerHand, enemy, enemyHand);
                 System.out.println(HANDSHAKE + "  It's a TIE!");
         }
@@ -145,10 +164,12 @@ class Game { // Used hierarchical inheritance
     public void displayGameResult(String player, String enemy) {
         System.out.println("\n=====================================");
         if (p.playerLives == 0) {
+            WavPlayer.playLoseGame(); // Play lose game sound
             System.out.println(player + "  has been defeated by  " + enemy + ".");
             System.out.println("-----  GAME OVER  -----");
             System.out.println(BROKEN_HEART + " Don't worry, you'll rise again! " + BROKEN_HEART);
         } else {
+            WavPlayer.playWinGame(); // Play win game sound
             System.out.println(player + "  defeated  " + enemy + ".");
             System.out.println("-----  CONGRATULATIONS  -----");
             System.out.println(FIRE + "  Crowd goes wild! " + FIRE);
@@ -225,7 +246,9 @@ class Game { // Used hierarchical inheritance
         if (winner.equals("player")) {
             // show guess first
             System.out.println(player + playerHand + "     " + enemyHand + enemy);
+            WavPlayer.playPlayerAttack(); // Play player attack sound
             p.attack();
+            WavPlayer.playEnemyDamaged(); // Play enemy damaged sound
             e.damaged();
             delay(1000);
             clearScreen();
@@ -262,7 +285,9 @@ class Game { // Used hierarchical inheritance
         } else if (winner.equals("enemy")) {
             // show guess first
             System.out.println(player + playerHand + "     " + enemyHand + enemy);
+            WavPlayer.playPlayerDamaged(); // Play player damaged sound
             p.damaged();
+            WavPlayer.playEnemyAttack(); // Play enemy attack sound
             e.attack();
             delay(1000);
             clearScreen();
@@ -345,6 +370,7 @@ class Player extends Character {
 
     @Override
     public void damaged() {
+        WavPlayer.playLifeLost(); // Play life lost sound when player takes damage
         System.out.print("\nPlayer: Oof!");
     }
 
@@ -352,6 +378,9 @@ class Player extends Character {
     @Override
     public void drainlife() {
         playerLives--;
+        if (playerLives <= 2) {
+            WavPlayer.playHeartbeat(); // Play heartbeat sound when health is low
+        }
     }
 }
 
@@ -365,6 +394,7 @@ class Enemy extends Character {
 
     @Override
     public void damaged() {
+        WavPlayer.playLifeLost(); // Play life lost sound when enemy takes damage
         System.out.println("\nEnemy: Argh.");
     }
 
@@ -372,6 +402,9 @@ class Enemy extends Character {
     @Override
     public void drainlife() {
         enemyLives--;
+        if (enemyLives <= 2) {
+            WavPlayer.playHeartbeat(); // Play heartbeat sound when health is low
+        }
     }
 }
 
