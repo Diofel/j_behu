@@ -6,6 +6,7 @@ import java.util.Scanner;
 class Game { // Used hierarchical inheritance
     private int consecutiveWins;
     private boolean randomCards;
+
     Player p = new Player(); // For overriden method calling
     Enemy e = new Enemy(); // For overriden method calling
 
@@ -25,7 +26,7 @@ class Game { // Used hierarchical inheritance
         // Title and background music
         WavPlayer.lobbyMusic();
         System.out.println(mainmenu());
-    
+
     }
 
     // Selects the Character
@@ -36,13 +37,49 @@ class Game { // Used hierarchical inheritance
 
         // Display Options
         for (int i = 0; i < options.length; i++) {
-            System.out.println((i + 1) + ": " + options[i]);
+
+            if (type.equals("PLAYER")) {
+                System.out.println((i + 1) + ": " + options[i]);
+            }
+
+            if (type.equals("ENEMY")) {
+                System.out.print((i + 1) + ": " + options[i]);
+                switch (i) {
+                    case 0:
+                        System.out.println(" | Easy");
+                        break;
+                    case 1:
+                        System.out.println(" | Normal");
+                        break;
+                    case 2:
+                        System.out.println(" | Hard");
+                        break;
+                    case 3:
+                        System.out.println(" | Hell");
+                        break;
+                }
+            }
         }
         System.out.println("====================================="); // Goes to the displayOptions to print Options
 
         // Player Input for Character
         System.out.print("Choose your " + type.toLowerCase() + ": ");
+
         int choice = getValidInput(scanner, options.length);
+
+        if (type.equals("ENEMY")) {
+            switch (choice) {
+                case 1:
+                    e.enemyLives -= 7;
+                    break;
+                case 2:
+                    e.enemyLives -= 5;
+                    break;
+                case 3:
+                    e.enemyLives -= 3;
+                    break;
+            }
+        }
         WavPlayer.playCharacterSelect(); // Play character select sound when character is chosen
         return options[choice - 1];
     }
@@ -59,8 +96,10 @@ class Game { // Used hierarchical inheritance
     // Play game method.
     public void playGame(Scanner scanner, String chosenPlayer, String chosenEnemy) {
         WavPlayer.stopMusic(); // stops background music
-        /* WavPlayer.<name of song>(); to play a song again 
-        make sure it is in the game_assets folder and is called on wavplayer.java*/
+        /*
+         * WavPlayer.<name of song>(); to play a song again
+         * make sure it is in the game_assets folder and is called on wavplayer.java
+         */
         while (p.playerLives > 0 && e.enemyLives > 0) {
             displayCardOptions();
             String playerHand = getPlayerHand(scanner);
@@ -90,7 +129,7 @@ class Game { // Used hierarchical inheritance
             return hand[random.nextInt(hand.length)];
         }
         // Play appropriate sound based on choice
-        switch(hand[choice - 1]) {
+        switch (hand[choice - 1]) {
             case ROCK:
                 WavPlayer.playRock();
                 break;
@@ -210,7 +249,7 @@ class Game { // Used hierarchical inheritance
                 System.out
                         .println(WARNING + "  Invalid choice! Please enter a number between 1 and " + maxOption + ".");
             } catch (NumberFormatException e) {
-                System.out.println(WARNING + "  Invalid input: Please enter a valid number.");
+                System.out.println(WARNING + "  Invalid input: Please enter a valid number."); // Exception Handling
             }
             System.out.print("Choose again: ");
         }
@@ -237,7 +276,7 @@ class Game { // Used hierarchical inheritance
     public void delay(int ms) { // milliseconds
         try {
             Thread.sleep(ms);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e) { // exception handling
             e.printStackTrace();
         }
     }
@@ -247,6 +286,7 @@ class Game { // Used hierarchical inheritance
             // show guess first
             System.out.println(player + playerHand + "     " + enemyHand + enemy);
             WavPlayer.playPlayerAttack(); // Play player attack sound
+            p.basicAttack(); // interface
             p.attack();
             WavPlayer.playEnemyDamaged(); // Play enemy damaged sound
             e.damaged();
@@ -286,6 +326,7 @@ class Game { // Used hierarchical inheritance
             // show guess first
             System.out.println(player + playerHand + "     " + enemyHand + enemy);
             WavPlayer.playPlayerDamaged(); // Play player damaged sound
+            e.basicAttack(); // interface
             p.damaged();
             WavPlayer.playEnemyAttack(); // Play enemy attack sound
             e.attack();
@@ -336,14 +377,6 @@ class Game { // Used hierarchical inheritance
 // For ABSTRACTION and INHERITANCE
 abstract class Character {
     private int lives = 10;
-    private String type;
-    private String[] options;
-
-    // For CONSTRUCTION
-    public void Character(String type, String[] options) {
-        this.type = type;
-        this.options = options;
-    }
 
     // For Encapsulation
     public int getLives() { // Returns life value
@@ -356,11 +389,10 @@ abstract class Character {
     abstract void damaged(); // Damaged sound
 
     abstract void drainlife(); // abstract setter for player and character
-
 }
 
 // For POLYMORPHISM
-class Player extends Character {
+class Player extends Character implements bAttack {
     int playerLives = getLives(); // set local playerlives to default life
 
     @Override
@@ -382,9 +414,14 @@ class Player extends Character {
             WavPlayer.playHeartbeat(); // Play heartbeat sound when health is low
         }
     }
+
+    @Override
+    public void basicAttack() { // interface
+        System.out.println("\nPlayer did a basic attack!");
+    }
 }
 
-class Enemy extends Character {
+class Enemy extends Character implements bAttack {
     int enemyLives = getLives(); // set local playerlives to default life
 
     @Override
@@ -395,7 +432,7 @@ class Enemy extends Character {
     @Override
     public void damaged() {
         WavPlayer.playLifeLost(); // Play life lost sound when enemy takes damage
-        System.out.println("\nEnemy: Argh.");
+        System.out.println("Enemy: Argh.");
     }
 
     // Setter for enemylife (drainlife)
@@ -405,6 +442,21 @@ class Enemy extends Character {
         if (enemyLives <= 2) {
             WavPlayer.playHeartbeat(); // Play heartbeat sound when health is low
         }
+    }
+
+    @Override
+    public void basicAttack() { // interface
+        System.out.println("\nEnemy did a basic attack!");
+    }
+}
+
+interface bAttack { // for interface
+    void basicAttack(); // Standard Attack
+}
+
+class Bye { // constructor
+    public Bye() {
+        System.out.println("Thanks for playing! Goodbye!");
     }
 }
 
@@ -437,7 +489,8 @@ public class behu {
             playAgain = g.askPlayAgain(scanner);
         } while (playAgain);
 
-        System.out.println("Thanks for playing! Goodbye!");
+        Bye b = new Bye(); // used this to replace the goodbye message to have a constructor requirement
+        // System.out.println("Thanks for playing! Goodbye!");
         scanner.close();
     }
 
