@@ -3,6 +3,13 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
+
+interface GameActions {
+    void basicAttack();  // The standard attack animation
+    void playHand(String hand);  // Method for playing rock/paper/scissors
+    void celebrate();  // Victory celebration
+}
+
 class Game { // Used hierarchical inheritance
     private int consecutiveWins;
     private boolean randomCards;
@@ -165,8 +172,8 @@ class Game { // Used hierarchical inheritance
         switch (result) {
             case "win":
                 clearScreen();
-                WavPlayer.playWinRound(); // Play win round sound
                 animation("player", player, playerHand, enemy, enemyHand);
+                p.celebrate();
                 System.out.println(PARTY + "  You WON this round!");
                 e.drainlife();
                 consecutiveWins++;
@@ -385,21 +392,32 @@ abstract class Character {
     private int lives = 10;
 
     // For Encapsulation
-    public int getLives() { // Returns life value
+    public int getLives() {
         return this.lives;
     }
 
     // For abstract methods
-    abstract void attack(); // Attack sound
-
-    abstract void damaged(); // Damaged sound
-
-    abstract void drainlife(); // abstract setter for player and character
+    abstract void attack();
+    abstract void damaged();
+    abstract void drainlife();
 }
 
-// For POLYMORPHISM
-class Player extends Character implements bAttack {
-    int playerLives = getLives(); // set local playerlives to default life
+class Player extends Character implements GameActions {
+    int playerLives = getLives();
+    private String lastPlayedHand;
+
+    // Constructor
+    public Player() {
+        super();
+        this.lastPlayedHand = "";
+    }
+
+    // Constructor overloading
+    public Player(int startingLives) {
+        super();
+        this.playerLives = startingLives;
+        this.lastPlayedHand = "";
+    }
 
     @Override
     public void attack() {
@@ -408,27 +426,52 @@ class Player extends Character implements bAttack {
 
     @Override
     public void damaged() {
-        WavPlayer.playLifeLost(); // Play life lost sound when player takes damage
+        WavPlayer.playLifeLost();
         System.out.print("\nPlayer: Oof!");
     }
 
-    // Setter for playerlife (drainlife)
     @Override
     public void drainlife() {
         playerLives--;
         if (playerLives <= 2) {
-            WavPlayer.playHeartbeat(); // Play heartbeat sound when health is low
+            WavPlayer.playHeartbeat();
         }
     }
 
     @Override
-    public void basicAttack() { // interface
+    public void basicAttack() {
         System.out.println("\nPlayer did a basic attack!");
+    }
+
+    @Override
+    public void playHand(String hand) {
+        this.lastPlayedHand = hand;
+        System.out.println("\nPlayer plays " + hand + "!");
+    }
+
+    @Override
+    public void celebrate() {
+        System.out.println("\nPlayer: Victory!");
+        WavPlayer.playWinRound();
     }
 }
 
-class Enemy extends Character implements bAttack {
-    int enemyLives = getLives(); // set local playerlives to default life
+class Enemy extends Character implements GameActions {
+    int enemyLives = getLives();
+    private String lastPlayedHand;
+
+    // Constructor
+    public Enemy() {
+        super();
+        this.lastPlayedHand = "";
+    }
+
+    // Constructor overloading
+    public Enemy(int startingLives) {
+        super();
+        this.enemyLives = startingLives;
+        this.lastPlayedHand = "";
+    }
 
     @Override
     public void attack() {
@@ -437,27 +480,34 @@ class Enemy extends Character implements bAttack {
 
     @Override
     public void damaged() {
-        WavPlayer.playLifeLost(); // Play life lost sound when enemy takes damage
+        WavPlayer.playLifeLost();
         System.out.println("Enemy: Argh.");
     }
 
-    // Setter for enemylife (drainlife)
     @Override
     public void drainlife() {
         enemyLives--;
         if (enemyLives <= 2) {
-            WavPlayer.playHeartbeat(); // Play heartbeat sound when health is low
+            WavPlayer.playHeartbeat();
         }
     }
 
     @Override
-    public void basicAttack() { // interface
+    public void basicAttack() {
         System.out.println("\nEnemy did a basic attack!");
     }
-}
 
-interface bAttack { // for interface
-    void basicAttack(); // Standard Attack
+    @Override
+    public void playHand(String hand) {
+        this.lastPlayedHand = hand;
+        System.out.println("\nEnemy plays " + hand + "!");
+    }
+
+    @Override
+    public void celebrate() {
+        System.out.println("\nEnemy: Muhahaha!");
+        WavPlayer.playWinRound();
+    }
 }
 
 class Bye { // constructor
