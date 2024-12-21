@@ -32,7 +32,7 @@ class Game { // Used hierarchical inheritance
     // Selects the Character
     public String selectCharacter(Scanner scanner, String type, String[] options) {
         WavPlayer.playClick(); // Play click sound when entering character selection
-        System.out.println("=====================================");
+        System.out.println("\n=====================================");
         System.out.println("-----  " + type + "  -----");
 
         // Display Options
@@ -204,13 +204,19 @@ class Game { // Used hierarchical inheritance
         System.out.println("\n=====================================");
         if (p.playerLives == 0) {
             WavPlayer.playLoseGame(); // Play lose game sound
-            System.out.println(player + "  has been defeated by  " + enemy + ".");
-            System.out.println("-----  GAME OVER  -----");
+            System.out.println(player + "  has been defeated by  " + enemy);
+            System.out.println(" __            _    _        _  _  ");
+            System.out.println("/__  /\\  |\\/| |_   / \\ \\  / |_ |_| ");
+            System.out.println("\\_| /--\\ |  | |_   \\_/  \\/  |_ | \\ ");
+            System.out.println("                                    ");
             System.out.println(BROKEN_HEART + " Don't worry, you'll rise again! " + BROKEN_HEART);
         } else {
             WavPlayer.playWinGame(); // Play win game sound
-            System.out.println(player + "  defeated  " + enemy + ".");
-            System.out.println("-----  CONGRATULATIONS  -----");
+            System.out.println(player + "  defeated  " + enemy);
+            System.out.println(" _  _        __  _       ___  __ ");
+            System.out.println("/  / \\ |\\ | /__ |_)  /\\   |  (_  ");
+            System.out.println("\\_ \\_/ | \\| \\_| | \\ /--\\  |  __) ");
+            System.out.println("                                    ");
             System.out.println(FIRE + "  Crowd goes wild! " + FIRE);
         }
         System.out.println("=====================================\n");
