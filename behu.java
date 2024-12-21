@@ -10,12 +10,13 @@ interface GameActions {
     void celebrate();  // Victory celebration
 }
 
+
 class Game { // Used hierarchical inheritance
     private int consecutiveWins;
     private boolean randomCards;
 
-    Player p = new Player(); // For overriden method calling
-    Enemy e = new Enemy(); // For overriden method calling
+    Player p;
+    Enemy e;
 
     static {
         try {
@@ -46,7 +47,21 @@ class Game { // Used hierarchical inheritance
         for (int i = 0; i < options.length; i++) {
 
             if (type.equals("PLAYER")) {
-                System.out.println((i + 1) + ": " + options[i]);
+                System.out.print((i + 1) + ": " + options[i]);
+                switch (i) {
+                    case 0:
+                        System.out.println(" | 1 life");
+                        break;
+                    case 1:
+                        System.out.println(" | 3 lives");
+                        break;
+                    case 2:
+                        System.out.println(" | 5 lives");
+                        break;
+                    case 3:
+                        System.out.println(" | 10 lives");
+                        break;
+                }
             }
 
             if (type.equals("ENEMY")) {
@@ -74,16 +89,36 @@ class Game { // Used hierarchical inheritance
 
         int choice = getValidInput(scanner, options.length);
 
+        if (type.equals("PLAYER")) {
+            switch (choice) {
+                case 1:
+                    p = new Player(1);
+                    break;
+                case 2:
+                    p = new Player(3);
+                    break;
+                case 3:
+                    p = new Player(5);
+                    break;
+                case 4:
+                    p = new Player();
+                    break;
+            }
+        }
+
         if (type.equals("ENEMY")) {
             switch (choice) {
                 case 1:
-                    e.enemyLives -= 7;
+                    e = new Enemy(1);
                     break;
                 case 2:
-                    e.enemyLives -= 5;
+                    e = new Enemy(3);
                     break;
                 case 3:
-                    e.enemyLives -= 3;
+                    e = new Enemy(5);
+                    break;
+                case 4:
+                    e = new Enemy();
                     break;
             }
         }
